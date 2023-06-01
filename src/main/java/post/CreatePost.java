@@ -23,11 +23,11 @@ public class CreatePost {
 
         public static CreatePost createPost(){
 
-                String tag[] = {"animal","canine","dog"};
+                String tag2 [] = {"animal","canine","dog"};
                 CreatePost post = CreatePost.builder()
                         .image("https://img.dummyapi.io/photo-1546975554-31053113e977.jpg")
                         .likes(45)
-                        .tags(tag)
+                        .tags(tag2)
                         .text("Put any text here 1234 ")
                         .owner("60d0fe4f5311236168a109d9")
                         .build();

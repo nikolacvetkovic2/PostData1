@@ -40,7 +40,7 @@ public class TestUser {
         System.out.println("Status code iz response je: " + response.getStatusCode());
 
         System.out.println("JsonPath Evoluaton za polje text je: " + response.jsonPath().get("data[0].text"));
-        softAssert.assertEquals(response.jsonPath().get("data[0].text"), "text");
+        softAssert.assertEquals(response.jsonPath().get("data[0].text"), "Put any text here 1234 ");
         softAssert.assertAll();
     }
 
@@ -51,7 +51,6 @@ public class TestUser {
         config.setup();
 
         Response response = given()
-                .baseUri("https://dummyapi.io/data/")
                 .pathParam("id", "60d0fe4f5311236168a109ca")
                 .when().get(Constants.GET_LIST_BY_USER);
 
@@ -101,10 +100,8 @@ public class TestUser {
         Config config = new Config();
         config.setup();
 
-        String [] tags2 = new String[3];
-        tags2[0] ="animal";
-        tags2[1] = "canine";
-        tags2[2] = "dog";
+        String [] tags2 = {"animal", "canine","dog"};
+
         CreatePost post = CreatePost.builder()
                 .image("https://img.dummyapi.io/photo-1546975554-31053113e977.jpg")
                 .likes(45)
@@ -123,29 +120,44 @@ public class TestUser {
         softAssert.assertAll();
     }
 
-//    @Test
+    @Test
     public void updatePostTest() {
         Config config = new Config();
         config.setup();
-        CreatePost post = CreatePost.createPost();
+        String [] tags2 = {"animal", "canine","dog"};
+
+        CreatePost post = CreatePost.builder()
+                .image("https://img.dummyapi.io/photo-1546975554-31053113e977.jpg")
+                .likes(45)
+                .tags(tags2)
+                .text("Put any text here 1234 ")
+                .owner("60d0fe4f5311236168a109d9")
+                .build();
         PostResponse response = given()
                 .body(post)
-                .log().all()
-                .when().post(Constants.CREATE_POST).getBody().as(PostResponse.class);
+                .when().post(Constants.CREATE_POST)
+                .getBody().as(PostResponse.class);
 
-        String updatedImage = "updatedImage";
         String updatedText = "updatedText";
-        post.setImage(updatedImage);
         post.setText(updatedText);
+
         String postID = response.getId();
-        PostResponse updatedPostResponse = given()
-                .body(updatedImage)
-                .body(updatedText)
-                .pathParam("id", "postID")
+        System.out.println("Post ID koji je vracen iz responsa je:" + " " + postID);
+
+        CreatePost updatedPost = CreatePost.builder()
+                .image("https://img.dummyapi.io/photo-1546975554-31053113e977.jpg")
+                .likes(45)
+                .tags(tags2)
+                .text(updatedText)
+                .owner("60d0fe4f5311236168a109d9")
+                .build();
+        PostResponse updatedPostResponse=given()
+                .body(updatedPost)
+                .pathParam("id",postID)
                 .when().put(Constants.UPDATE_POST).getBody().as(PostResponse.class);
 
-//        softAssert.assertEquals(updatedPostResponse.getUpdatedImage, updatedImage);
-//        softAssert.assertEquals(updatedPostResponse.getUpdatedText, updatedText);
+        boolean isTextFieldUpdated=updatedPostResponse.getText().equals(updatedText);
+        softAssert.assertEquals(isTextFieldUpdated, true);
         softAssert.assertAll();
     }
 
