@@ -4,8 +4,11 @@ import com.github.javafaker.Faker;
 import config.Config;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import post.CreatePost;
@@ -23,7 +26,7 @@ public class TestUser {
 
     SoftAssert softAssert;
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void setUp() {
         softAssert = new SoftAssert();
     }
@@ -40,7 +43,7 @@ public class TestUser {
         System.out.println("Status code iz response je: " + response.getStatusCode());
 
         System.out.println("JsonPath Evoluaton za polje text je: " + response.jsonPath().get("data[0].text"));
-        softAssert.assertEquals(response.jsonPath().get("data[0].text"), "Put any text here 1234 ");
+        softAssert.assertEquals(response.jsonPath().get("data[0].text"), "updatedText");
         softAssert.assertAll();
     }
 
@@ -63,19 +66,15 @@ public class TestUser {
 
     @Test
     public void getListByTagTest() {
-
-        Map<String, String> headers = new HashMap<>();
-        headers.put("app-id", "64727de75bbbf42d4b35b287");
+        Config config = new Config();
+        config.setup();
         Response response = given()
-                .baseUri("https://dummyapi.io/data/")
-                .basePath("v1/")
-                .pathParam("id", "dog")
-                .headers(headers)
-                .log().all()
-                .when().get("tag/dog/post");
+                .pathParam("id", "animal")
+                .when().get(Constants.GET_LIST_BY_TAG);
 
         Assert.assertEquals(response.getStatusCode(), 200);
-        Assert.assertEquals(response.jsonPath().get("data[0].likes"), "45");
+        int a= response.jsonPath().get("data[0].likes");
+        Assert.assertEquals(a, 45);
 
     }
 
