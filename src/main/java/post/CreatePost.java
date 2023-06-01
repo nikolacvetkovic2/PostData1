@@ -16,18 +16,18 @@ import java.util.Locale;
 public class CreatePost {
         public  String image;
         public int likes;
-        @JsonProperty("tabs")
-        public String[] tabs;
+        @JsonProperty("tags")
+        public String[] tags;
         public String text;
         public String owner;
 
         public static CreatePost createPost(){
 
-                String tab[] = {"animal","canine","dog"};
+                String tag[] = {"animal","canine","dog"};
                 CreatePost post = CreatePost.builder()
                         .image("https://img.dummyapi.io/photo-1546975554-31053113e977.jpg")
                         .likes(45)
-                        .tabs(tab)
+                        .tags(tag)
                         .text("Put any text here 1234 ")
                         .owner("60d0fe4f5311236168a109d9")
                         .build();
